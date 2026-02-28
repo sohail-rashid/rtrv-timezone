@@ -1,0 +1,20 @@
+{
+  "manifest_version": 3,
+  "name": "Rtrv Timezone - World Clock Planner",
+  "version": "1.0.0",
+  "description": "A beautiful glassmorphism world clock planner that replaces your new tab. Compare times across multiple timezones with an elegant, modern interface.",
+  "icons": {
+    "16": "icons/icon16.png",
+    "32": "icons/icon32.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "chrome_url_overrides": {
+    "newtab": "index.html"
+  },
+  "permissions": [
+    "storage"
+  ],
+  "author": "Rtrv",
+  "homepage_url": "https://github.com/rtrv/world-clock"
+}

@@ -1,0 +1,243 @@
+@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap');
+
+/* Glassmorphism Design System - Light Theme (Default) */
+:root {
+  --glass: rgba(255,255,255,0.6);
+  --glass-hover: rgba(255,255,255,0.75);
+  --glass-border: rgba(0,0,0,0.08);
+  --glass-border-hover: rgba(0,0,0,0.15);
+  --accent: #6c8fff;
+  --accent2: #ff6fd8;
+  --accent-glow: rgba(108,143,255,0.3);
+  --text: #1a202c;
+  --text-muted: rgba(26,32,44,0.5);
+  --text-secondary: rgba(26,32,44,0.7);
+  --bg-primary: #f5f7fb;
+  --bg-secondary: #e8ecf4;
+  --bg-card: rgba(255,255,255,0.7);
+  --success: #22c55e;
+  --warning: #f59e0b;
+  --mesh-1: rgba(108,143,255,0.12);
+  --mesh-2: rgba(255,111,216,0.08);
+  --mesh-3: rgba(0,220,180,0.06);
+  --now-bg: rgba(255,111,216,0.2);
+  --business-bg: rgba(74,222,128,0.15);
+  --night-bg: rgba(0,0,0,0.03);
+  --header-bg: rgba(255,255,255,0.85);
+  --header-border: rgba(0,0,0,0.06);
+  --orb-opacity: 0.08;
+  --card-shine: rgba(255,255,255,0.5);
+  --tooltip-bg: #1a202c;
+  --tooltip-text: #f5f7fb;
+}
+
+/* Dark Theme */
+.dark {
+  --glass: rgba(255,255,255,0.08);
+  --glass-hover: rgba(255,255,255,0.12);
+  --glass-border: rgba(255,255,255,0.12);
+  --glass-border-hover: rgba(255,255,255,0.22);
+  --accent: #6c8fff;
+  --accent2: #ff6fd8;
+  --accent-glow: rgba(108,143,255,0.4);
+  --text: #f0f4ff;
+  --text-muted: rgba(240,244,255,0.5);
+  --text-secondary: rgba(240,244,255,0.7);
+  --bg-primary: #0d1117;
+  --bg-secondary: #12172b;
+  --bg-card: rgba(255,255,255,0.08);
+  --success: #4ade80;
+  --warning: #fbbf24;
+  --mesh-1: rgba(108,143,255,0.18);
+  --mesh-2: rgba(255,111,216,0.12);
+  --mesh-3: rgba(0,220,180,0.08);
+  --now-bg: rgba(255,111,216,0.25);
+  --business-bg: rgba(74,222,128,0.12);
+  --night-bg: rgba(255,255,255,0.02);
+  --header-bg: rgba(13,17,23,0.8);
+  --header-border: rgba(255,255,255,0.08);
+  --orb-opacity: 0.12;
+  --card-shine: rgba(255,255,255,0.25);
+  --tooltip-bg: #0d1117;
+  --tooltip-text: #f0f4ff;
+}
+
+body {
+  font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--bg-primary);
+  color: var(--text);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Mesh gradient background */
+.bg-mesh {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  background:
+    radial-gradient(ellipse 60% 50% at 20% 20%, var(--mesh-1) 0%, transparent 70%),
+    radial-gradient(ellipse 50% 60% at 80% 80%, var(--mesh-2) 0%, transparent 70%),
+    radial-gradient(ellipse 40% 40% at 60% 40%, var(--mesh-3) 0%, transparent 60%),
+    var(--bg-primary);
+  transition: background 0.3s ease;
+}
+
+/* Ambient orbs */
+.orb {
+  position: fixed;
+  border-radius: 50%;
+  filter: blur(80px);
+  pointer-events: none;
+  opacity: var(--orb-opacity);
+  transition: opacity 0.3s ease;
+}
+.orb-1 {
+  width: 500px;
+  height: 500px;
+  background: var(--accent);
+  top: -100px;
+  right: -100px;
+}
+.orb-2 {
+  width: 400px;
+  height: 400px;
+  background: var(--accent2);
+  bottom: -100px;
+  left: -100px;
+}
+
+/* Glass card base */
+.glass-card {
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  border-radius: 20px;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  position: relative;
+  overflow: hidden;
+  transition: all 0.25s ease;
+}
+.glass-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--card-shine), transparent);
+}
+.glass-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--glass-border-hover);
+  background: var(--glass-hover);
+}
+.glass-card.active {
+  border-color: rgba(108,143,255,0.5);
+  background: rgba(108,143,255,0.1);
+  box-shadow: 0 0 0 1px rgba(108,143,255,0.3), 0 8px 32px rgba(108,143,255,0.15);
+}
+
+/* Glass button */
+.glass-btn {
+  padding: 9px 18px;
+  border-radius: 10px;
+  border: 1px solid var(--glass-border);
+  background: var(--glass);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.glass-btn:hover {
+  background: var(--glass-hover);
+  border-color: var(--glass-border-hover);
+  transform: translateY(-1px);
+}
+.glass-btn-primary {
+  background: linear-gradient(135deg, var(--accent), #4a6fff);
+  border-color: transparent;
+  box-shadow: 0 4px 20px var(--accent-glow);
+}
+.glass-btn-primary:hover {
+  box-shadow: 0 8px 30px rgba(108,143,255,0.55);
+}
+
+/* Live dot animation */
+.live-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--success);
+  box-shadow: 0 0 0 3px rgba(74,222,128,0.2);
+  animation: pulse 2s infinite;
+}
+@keyframes pulse {
+  0%, 100% { box-shadow: 0 0 0 3px rgba(74,222,128,0.2); }
+  50% { box-shadow: 0 0 0 6px rgba(74,222,128,0.05); }
+}
+
+/* Mono font for times */
+.font-mono-time {
+  font-family: 'DM Mono', ui-monospace, monospace;
+}
+
+/* Custom scrollbar styles */
+.scrollbar-thin {
+  scrollbar-width: thin;
+  scrollbar-color: var(--glass-border-hover) transparent;
+}
+
+.scrollbar-thin::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+.scrollbar-thin::-webkit-scrollbar-track {
+  background: transparent;
+}
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background-color: var(--glass-border-hover);
+  border-radius: 9999px;
+}
+.scrollbar-thin::-webkit-scrollbar-thumb:hover {
+  background-color: var(--text-muted);
+}
+
+.scrollbar-hide {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* Font smoothing */
+html {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Custom focus styles */
+*:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* Tabular nums for time displays */
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Custom selection color */
+::selection {
+  background-color: rgba(108,143,255,0.4);
+  color: #fff;
+}
