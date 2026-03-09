@@ -140,9 +140,9 @@ src/chromeExtension/
 
 ## Permissions
 
-This extension requires the following permissions:
+This extension requires **no special permissions**.
 
-- **storage** - To save your timezone preferences and settings locally
+- Data is stored using the browser's built-in `localStorage` API (no `chrome.storage` permission needed)
 
 No network access or other sensitive permissions are required (except for loading Google Fonts).
 
