@@ -39,7 +39,7 @@ export function TimeGrid() {
     return gridData.filter((row) => row.timezone.id !== state.settings.primaryZoneId);
   }, [gridData, state.settings.primaryZoneId]);
 
-  // Find "now" column index
+  // Find "now" column index (visual highlight only)
   const nowColumnIndex = useMemo(() => {
     if (gridData.length === 0) return -1;
     const now = DateTime.now();
@@ -50,14 +50,25 @@ export function TimeGrid() {
     });
   }, [gridData, state.settings.resolution]);
 
-  // Scroll to now on mount
+  // Find the column that contains the anchor time in the primary zone
+  const anchorColumnIndex = useMemo(() => {
+    if (!primaryRow) return -1;
+    const anchor = anchorTime.setZone(primaryZone.iana);
+    return primaryRow.slots.findIndex((slot) => {
+      const slotEnd = slot.time.plus({ minutes: state.settings.resolution });
+      return anchor >= slot.time && anchor < slotEnd;
+    });
+  }, [primaryRow, anchorTime, primaryZone.iana, state.settings.resolution]);
+
+  // Scroll to anchor column whenever anchor time or settings change, but not during grid drag
   useEffect(() => {
-    if (nowColumnIndex >= 0 && scrollContainerRef.current) {
-      const cellWidth = state.settings.resolution === 60 ? 64 : 48;
-      const scrollLeft = nowColumnIndex * cellWidth - scrollContainerRef.current.clientWidth / 2 + cellWidth / 2;
+    if (isDraggingTime) return;
+    if (anchorColumnIndex >= 0 && scrollContainerRef.current) {
+      const cellWidthPx = state.settings.resolution === 60 ? 64 : 48;
+      const scrollLeft = anchorColumnIndex * cellWidthPx - scrollContainerRef.current.clientWidth / 2 + cellWidthPx / 2;
       scrollContainerRef.current.scrollTo({ left: Math.max(0, scrollLeft), behavior: 'smooth' });
     }
-  }, [nowColumnIndex, state.settings.resolution]);
+  }, [anchorColumnIndex, state.anchorTime, state.settings.resolution, isDraggingTime]);
 
   // Handle mouse/touch drag to adjust time (on header only)
   const handlePointerDown = (e: React.PointerEvent) => {
@@ -254,16 +265,36 @@ export function TimeGrid() {
             ))}
           </div>
 
+          {/* Business Hours Toggle */}
+          <button
+            onClick={() => updateSettings({ showBusinessHours: !state.settings.showBusinessHours })}
+            className={`px-2.5 py-1.5 text-[11px] font-medium rounded-lg transition-all ${
+              state.settings.showBusinessHours ? 'bg-[#6c8fff] text-white' : ''
+            }`}
+            style={!state.settings.showBusinessHours ? { background: 'var(--glass)', color: 'var(--text-secondary)', border: '1px solid var(--glass-border)' } : {}}
+            title="Toggle business/night hour shading"
+          >
+            Hours
+          </button>
+
           {/* Legend */}
           <div className="hidden sm:flex items-center gap-4 ml-auto text-[11px]" style={{ color: 'var(--text-muted)' }}>
             <div className="flex items-center gap-1.5">
-              <div className="w-3 h-3 rounded-sm" style={{ background: 'var(--business-bg)', border: '1px solid rgba(74,222,128,0.4)' }}></div>
-              <span className="font-medium">Business</span>
+              <div className="w-3 h-3 rounded-sm" style={{ background: 'var(--anchor-bg)', border: '1px solid rgba(251,146,60,0.5)' }}></div>
+              <span className="font-medium">Selected</span>
             </div>
-            <div className="flex items-center gap-1.5">
-              <div className="w-3 h-3 rounded-sm" style={{ background: 'var(--night-bg)', border: '1px solid var(--glass-border)' }}></div>
-              <span className="font-medium">Night</span>
-            </div>
+            {state.settings.showBusinessHours && (
+              <>
+                <div className="flex items-center gap-1.5">
+                  <div className="w-3 h-3 rounded-sm" style={{ background: 'var(--business-bg)', border: '1px solid rgba(74,222,128,0.4)' }}></div>
+                  <span className="font-medium">Business</span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <div className="w-3 h-3 rounded-sm" style={{ background: 'var(--night-bg)', border: '1px solid var(--glass-border)' }}></div>
+                  <span className="font-medium">Night</span>
+                </div>
+              </>
+            )}
             <div className="flex items-center gap-1.5">
               <div className="w-3 h-3 rounded-sm" style={{ background: 'var(--now-bg)', border: '1px solid rgba(255,111,216,0.5)' }}></div>
               <span className="font-medium">Now</span>
@@ -351,13 +382,16 @@ export function TimeGrid() {
                   const isHourStart = slot.time.minute === 0;
                   const isDayStart = slot.time.hour === 0 && slot.time.minute === 0;
                   const isNow = idx === nowColumnIndex;
+                  const isAnchor = idx === anchorColumnIndex;
 
                   let bgStyle = { background: 'rgba(108,143,255,0.05)' };
-                  if (isNow) {
+                  if (isAnchor) {
+                    bgStyle = { background: 'var(--anchor-bg)' };
+                  } else if (isNow) {
                     bgStyle = { background: 'var(--now-bg)' };
-                  } else if (slot.isNightHour) {
+                  } else if (state.settings.showBusinessHours && slot.isNightHour) {
                     bgStyle = { background: 'var(--night-bg)' };
-                  } else if (slot.isBusinessHour) {
+                  } else if (state.settings.showBusinessHours && slot.isBusinessHour) {
                     bgStyle = { background: 'var(--business-bg)' };
                   }
 
@@ -405,15 +439,18 @@ export function TimeGrid() {
                 >
                   {row.slots.map((slot, idx) => {
                     const isNow = idx === nowColumnIndex;
+                    const isAnchor = idx === anchorColumnIndex;
                     const isDayStart = slot.time.hour === 0 && slot.time.minute === 0;
                     const isHourStart = slot.time.minute === 0;
 
                     let bgStyle = { background: 'transparent' };
-                    if (isNow) {
+                    if (isAnchor) {
+                      bgStyle = { background: 'var(--anchor-bg)' };
+                    } else if (isNow) {
                       bgStyle = { background: 'var(--now-bg)' };
-                    } else if (slot.isNightHour) {
+                    } else if (state.settings.showBusinessHours && slot.isNightHour) {
                       bgStyle = { background: 'var(--night-bg)' };
-                    } else if (slot.isBusinessHour) {
+                    } else if (state.settings.showBusinessHours && slot.isBusinessHour) {
                       bgStyle = { background: 'var(--business-bg)' };
                     }
 

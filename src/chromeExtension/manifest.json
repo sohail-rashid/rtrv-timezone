@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Rtrv Timezone - World Clock Planner",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "World clock planner that replaces your new tab. Compare times across multiple timezones with an elegant, modern interface.",
   "icons": {
     "16": "icons/icon16.png",

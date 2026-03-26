@@ -70,7 +70,7 @@ export function generateTimeSlots(
   resolution: 30 | 60
 ): { time: DateTime; isToday: boolean; isTomorrow: boolean; isYesterday: boolean; isBusinessHour: boolean; isNightHour: boolean }[] {
   const slots: ReturnType<typeof generateTimeSlots> = [];
-  const startTime = anchorTime.setZone(primaryZone).startOf('hour').minus({ hours: Math.floor(hourRange / 4) });
+  const startTime = anchorTime.setZone(primaryZone).startOf('hour').minus({ hours: Math.floor(hourRange / 2) });
   const slotCount = (hourRange * 60) / resolution;
 
   for (let i = 0; i < slotCount; i++) {

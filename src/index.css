@@ -22,6 +22,7 @@
   --mesh-2: rgba(255,111,216,0.08);
   --mesh-3: rgba(0,220,180,0.06);
   --now-bg: rgba(255,111,216,0.2);
+  --anchor-bg: rgba(251,146,60,0.2);
   --business-bg: rgba(74,222,128,0.15);
   --night-bg: rgba(0,0,0,0.03);
   --header-bg: rgba(255,255,255,0.85);
@@ -53,6 +54,7 @@
   --mesh-2: rgba(255,111,216,0.12);
   --mesh-3: rgba(0,220,180,0.08);
   --now-bg: rgba(255,111,216,0.25);
+  --anchor-bg: rgba(251,146,60,0.25);
   --business-bg: rgba(74,222,128,0.12);
   --night-bg: rgba(255,255,255,0.02);
   --header-bg: rgba(13,17,23,0.8);

@@ -1,4 +1,4 @@
-import { createContext, useContext, useReducer, useEffect, useCallback, type ReactNode } from 'react';
+import { createContext, useContext, useReducer, useEffect, useCallback, useRef, type ReactNode } from 'react';
 import { DateTime } from 'luxon';
 import type { AppState, TimezoneEntry, AppSettings } from '../types';
 import { loadState, saveState } from '../utils/storage';
@@ -38,17 +38,25 @@ function reducer(state: AppState, action: Action): AppState {
         settings: { ...state.settings, ...action.payload },
       };
 
-    case 'SET_ANCHOR_TIME':
+    case 'SET_ANCHOR_TIME': {
+      const dt = DateTime.fromISO(action.payload);
+      const res = state.settings.resolution;
+      const snapped = dt.set({ minute: Math.floor(dt.minute / res) * res, second: 0, millisecond: 0 });
       return {
         ...state,
-        anchorTime: action.payload,
+        anchorTime: snapped.toISO()!,
       };
+    }
 
-    case 'RESET_TO_NOW':
+    case 'RESET_TO_NOW': {
+      const now = DateTime.now();
+      const res = state.settings.resolution;
+      const snapped = now.set({ minute: Math.floor(now.minute / res) * res, second: 0, millisecond: 0 });
       return {
         ...state,
-        anchorTime: DateTime.now().toISO()!,
+        anchorTime: snapped.toISO()!,
       };
+    }
 
     case 'LOAD_STATE':
       return action.payload;
@@ -71,18 +79,25 @@ interface AppContextType {
 
 const AppContext = createContext<AppContextType | null>(null);
 
+function snapToResolution(dt: DateTime, resolution: number): DateTime {
+  return dt.set({ minute: Math.floor(dt.minute / resolution) * resolution, second: 0, millisecond: 0 });
+}
+
 export function AppProvider({ children }: { children: ReactNode }) {
   const [state, dispatch] = useReducer(reducer, loadState());
+  const isUserAnchorRef = useRef(false);
 
   // Persist state changes (except anchorTime)
   useEffect(() => {
     saveState({ timezones: state.timezones, settings: state.settings });
   }, [state.timezones, state.settings]);
 
-  // Update anchor time every minute
+  // Only auto-tick anchor time when the user hasn't manually adjusted it
   useEffect(() => {
     const interval = setInterval(() => {
-      dispatch({ type: 'SET_ANCHOR_TIME', payload: DateTime.now().toISO()! });
+      if (!isUserAnchorRef.current) {
+        dispatch({ type: 'SET_ANCHOR_TIME', payload: DateTime.now().toISO()! });
+      }
     }, 60000);
     return () => clearInterval(interval);
   }, []);
@@ -104,10 +119,13 @@ export function AppProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const setAnchorTime = useCallback((time: DateTime) => {
-    dispatch({ type: 'SET_ANCHOR_TIME', payload: time.toISO()! });
-  }, []);
+    isUserAnchorRef.current = true;
+    const snapped = snapToResolution(time, state.settings.resolution);
+    dispatch({ type: 'SET_ANCHOR_TIME', payload: snapped.toISO()! });
+  }, [state.settings.resolution]);
 
   const resetToNow = useCallback(() => {
+    isUserAnchorRef.current = false;
     dispatch({ type: 'RESET_TO_NOW' });
   }, []);
 
