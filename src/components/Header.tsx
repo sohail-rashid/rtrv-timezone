@@ -2,14 +2,16 @@ import { useTheme } from '../context/ThemeContext';
 import { useApp } from '../context/AppContext';
 import { useToast } from '../context/ToastContext';
 import { exportTimeSummary } from '../utils/timezone';
+import { COLOR_THEMES } from '../utils/themes';
 import { DateTime } from 'luxon';
 
 interface HeaderProps {
   onAddTimezone: () => void;
+  onOpenThemePicker: () => void;
 }
 
-export function Header({ onAddTimezone }: HeaderProps) {
-  const { theme, setTheme } = useTheme();
+export function Header({ onAddTimezone, onOpenThemePicker }: HeaderProps) {
+  const { theme, setTheme, colorTheme, resolvedTheme } = useTheme();
   const { state } = useApp();
   const { addToast } = useToast();
 
@@ -71,6 +73,25 @@ export function Header({ onAddTimezone }: HeaderProps) {
 
           {/* Actions */}
           <div className="flex items-center gap-2.5">
+            {/* Color Theme Picker */}
+            {(() => {
+              const currentTheme = COLOR_THEMES.find((t) => t.id === colorTheme) || COLOR_THEMES[0];
+              const previewColor = resolvedTheme === 'dark' ? currentTheme.preview.dark : currentTheme.preview.light;
+              return (
+                <button
+                  onClick={onOpenThemePicker}
+                  className="glass-btn"
+                  title={`Theme: ${currentTheme.name}`}
+                >
+                  <div
+                    className="w-4 h-4 rounded-full"
+                    style={{ background: previewColor, boxShadow: `0 0 8px ${previewColor}40` }}
+                  />
+                  <span className="hidden sm:inline">{currentTheme.name}</span>
+                </button>
+              );
+            })()}
+
             {/* Theme Toggle Button */}
             <button
               onClick={cycleTheme}

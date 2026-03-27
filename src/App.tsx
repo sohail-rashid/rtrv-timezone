@@ -10,6 +10,7 @@ import {
   TimeSlider,
   AddTimezoneModal,
   ToastContainer,
+  ThemePicker,
 } from './components';
 import { DatePickerModal, TimePickerModal } from './components/DateTimePickers';
 
@@ -17,6 +18,7 @@ function AppContent() {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
   const [isTimePickerOpen, setIsTimePickerOpen] = useState(false);
+  const [isThemePickerOpen, setIsThemePickerOpen] = useState(false);
   const { state, setAnchorTime, getPrimaryZone } = useApp();
 
   const anchorTime = useMemo(() => DateTime.fromISO(state.anchorTime), [state.anchorTime]);
@@ -32,7 +34,7 @@ function AppContent() {
       
       {/* Content */}
       <div className="relative z-10">
-        <Header onAddTimezone={() => setIsAddModalOpen(true)} />
+        <Header onAddTimezone={() => setIsAddModalOpen(true)} onOpenThemePicker={() => setIsThemePickerOpen(true)} />
 
         <main className="max-w-[1100px] mx-auto px-6 py-8 space-y-7">
           {/* Timezone Cards */}
@@ -79,6 +81,12 @@ function AppContent() {
         value={timeInZone}
         onChange={(dt) => setAnchorTime(dt)}
         format={state.settings.timeFormat}
+      />
+
+      {/* Theme Picker Modal */}
+      <ThemePicker
+        isOpen={isThemePickerOpen}
+        onClose={() => setIsThemePickerOpen(false)}
       />
 
       {/* Toast Notifications */}
