@@ -52,7 +52,7 @@ export function Header({ onAddTimezone }: HeaderProps) {
         <div className="flex items-center justify-between h-16">
           {/* Logo & Title */}
           <div className="flex items-center gap-3">
-            <div className="w-11 h-11 rounded-[14px] bg-gradient-to-br from-[#6c8fff] to-[#ff6fd8] flex items-center justify-center shadow-lg shadow-[rgba(108,143,255,0.35)]">
+            <div className="w-11 h-11 rounded-[14px] flex items-center justify-center shadow-lg" style={{ background: `linear-gradient(135deg, var(--accent), var(--accent2))`, boxShadow: `0 4px 16px var(--accent-glow)` }}>
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <circle cx="12" cy="12" r="9" stroke="white" strokeWidth="1.5"/>
                 <ellipse cx="12" cy="12" rx="3.5" ry="9" stroke="white" strokeWidth="1.5"/>

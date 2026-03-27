@@ -119,8 +119,8 @@ export function AddTimezoneModal({ isOpen, onClose }: AddTimezoneModalProps) {
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 onKeyDown={handleKeyDown}
-                className="w-full pl-10 pr-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6c8fff]/40 transition-all"
-                style={{ border: '1px solid var(--glass-border)', background: 'var(--glass)', color: 'var(--text)' }}
+                className="w-full pl-10 pr-4 py-3 rounded-xl focus:outline-none focus:ring-2 transition-all"
+                style={{ border: '1px solid var(--glass-border)', background: 'var(--glass)', color: 'var(--text)', '--tw-ring-color': 'var(--accent-glow)' } as React.CSSProperties}
               />
             </div>
 
@@ -144,7 +144,7 @@ export function AddTimezoneModal({ isOpen, onClose }: AddTimezoneModalProps) {
                       key={tz.iana}
                       onClick={() => handleAddTimezone(tz.iana, tz.label)}
                       disabled={isAdded}
-                      className={`w-full px-4 py-3 text-left flex items-center gap-3 transition-colors hover:bg-[rgba(108,143,255,0.08)] ${
+                      className={`w-full px-4 py-3 text-left flex items-center gap-3 transition-colors ${
                         isAdded ? 'cursor-not-allowed opacity-60' : ''
                       }`}
                       style={{ 
@@ -152,6 +152,8 @@ export function AddTimezoneModal({ isOpen, onClose }: AddTimezoneModalProps) {
                         borderBottom: idx < results.length - 1 ? '1px solid var(--glass-border)' : 'none',
                         color: isAdded ? 'var(--text-muted)' : 'var(--text)'
                       }}
+                      onMouseEnter={(e) => { if (!isAdded) (e.currentTarget.style.background = 'var(--accent-glow)'); }}
+                      onMouseLeave={(e) => { e.currentTarget.style.background = isAdded ? 'var(--glass)' : 'transparent'; }}
                     >
                       <span className="text-xl flex-shrink-0">{flag}</span>
                       <div className="flex-1 min-w-0">
@@ -190,13 +192,15 @@ export function AddTimezoneModal({ isOpen, onClose }: AddTimezoneModalProps) {
                     onClick={() => handlePresetClick(preset)}
                     disabled={isAdded}
                     className={`px-3 py-1.5 text-sm font-medium rounded-full transition-all flex items-center gap-1.5 ${
-                      isAdded ? 'cursor-not-allowed opacity-60' : 'hover:text-[#6c8fff] hover:border-[rgba(108,143,255,0.4)]'
+                      isAdded ? 'cursor-not-allowed opacity-60' : ''
                     }`}
                     style={{ 
                       background: 'var(--glass)', 
                       color: isAdded ? 'var(--text-muted)' : 'var(--text-secondary)',
                       border: '1px solid var(--glass-border)'
                     }}
+                    onMouseEnter={(e) => { if (!isAdded) { e.currentTarget.style.color = 'var(--accent)'; e.currentTarget.style.borderColor = 'var(--accent-glow)'; } }}
+                    onMouseLeave={(e) => { e.currentTarget.style.color = isAdded ? 'var(--text-muted)' : 'var(--text-secondary)'; e.currentTarget.style.borderColor = 'var(--glass-border)'; }}
                     title={`${preset.city || preset.label} — ${formatTime(currentTime, state.settings.timeFormat)}`}
                   >
                     <span className="text-[14px]">{flag}</span>

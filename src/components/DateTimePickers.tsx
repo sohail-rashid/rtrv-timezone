@@ -114,14 +114,14 @@ export function DatePickerModal({ isOpen, onClose, value, onChange }: DatePicker
                     : cell.isToday
                     ? 'font-bold'
                     : cell.isCurrentMonth
-                    ? 'hover:bg-[rgba(108,143,255,0.12)]'
+                    ? ''
                     : 'opacity-30'
                 }`}
                 style={{
                   background: cell.isSelected
-                    ? 'linear-gradient(135deg, var(--accent), #4a6fff)'
+                    ? 'linear-gradient(135deg, var(--accent), var(--accent2))'
                     : cell.isToday
-                    ? 'rgba(108,143,255,0.15)'
+                    ? 'var(--accent-glow)'
                     : 'transparent',
                   color: cell.isSelected ? 'white' : cell.isToday ? 'var(--accent)' : 'var(--text)',
                   boxShadow: cell.isSelected ? '0 4px 16px var(--accent-glow)' : 'none',
@@ -282,7 +282,7 @@ export function TimePickerModal({ isOpen, onClose, value, onChange, format }: Ti
                   onClick={togglePeriod}
                   className="w-14 h-16 rounded-xl flex items-center justify-center font-mono-time text-[16px] font-semibold transition-all mt-[26px]"
                   style={{
-                    background: 'linear-gradient(135deg, var(--accent), #4a6fff)',
+                    background: 'linear-gradient(135deg, var(--accent), var(--accent2))',
                     color: 'white',
                     border: '1px solid transparent',
                     boxShadow: '0 4px 16px var(--accent-glow)',
@@ -304,7 +304,7 @@ export function TimePickerModal({ isOpen, onClose, value, onChange, format }: Ti
               className="glass-btn text-[12px]"
               style={{
                 padding: '6px 18px',
-                background: 'linear-gradient(135deg, var(--accent), #4a6fff)',
+                background: 'linear-gradient(135deg, var(--accent), var(--accent2))',
                 color: 'white',
                 border: '1px solid transparent',
                 boxShadow: '0 4px 16px var(--accent-glow)',

@@ -122,7 +122,7 @@ export function TimeSlider({ onOpenDatePicker, onOpenTimePicker }: TimeSliderPro
           <span className="text-[13px] font-semibold" style={{ color: 'var(--text)' }}>
             {primaryZone.city || primaryZone.label}
           </span>
-          <span className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-[rgba(108,143,255,0.2)] text-[#6c8fff] tracking-wide">
+          <span className="text-[10px] font-semibold px-2 py-0.5 rounded-md tracking-wide" style={{ background: 'var(--accent-glow)', color: 'var(--accent)' }}>
             PRIMARY
           </span>
         </div>
@@ -197,8 +197,8 @@ export function TimeSlider({ onOpenDatePicker, onOpenTimePicker }: TimeSliderPro
           <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 h-1 rounded-full" style={{ background: 'var(--glass-border)' }}>
             {/* Progress fill with gradient */}
             <div 
-              className="absolute inset-y-0 left-0 rounded-full bg-gradient-to-r from-[#6c8fff] to-[#ff6fd8] transition-all duration-75"
-              style={{ width: `${sliderPosition}%` }}
+              className="absolute inset-y-0 left-0 rounded-full transition-all duration-75"
+              style={{ width: `${sliderPosition}%`, background: `linear-gradient(90deg, var(--accent), var(--accent2))` }}
             />
             
             {/* Now marker */}
@@ -218,7 +218,7 @@ export function TimeSlider({ onOpenDatePicker, onOpenTimePicker }: TimeSliderPro
             style={{ left: `${sliderPosition}%` }}
           >
             <div className={`w-[18px] h-[18px] bg-white rounded-full shadow-lg ${
-              isDragging ? 'shadow-[0_2px_12px_rgba(108,143,255,0.5)]' : 'shadow-[0_2px_8px_rgba(0,0,0,0.3)]'
+              isDragging ? 'shadow-[0_2px_12px_rgba(196,154,66,0.5)]' : 'shadow-[0_2px_8px_rgba(0,0,0,0.3)]'
             }`} />
             {/* Tooltip on drag */}
             {isDragging && (

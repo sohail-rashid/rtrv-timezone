@@ -25,7 +25,7 @@ const iconMap = {
 
 const colorMap = {
   success: { bg: 'rgba(34,197,94,0.15)', border: 'rgba(34,197,94,0.4)', text: '#22c55e' },
-  info: { bg: 'rgba(108,143,255,0.15)', border: 'rgba(108,143,255,0.4)', text: '#6c8fff' },
+  info: { bg: 'rgba(196,154,66,0.15)', border: 'rgba(196,154,66,0.4)', text: '#c49a42' },
   warning: { bg: 'rgba(245,158,11,0.15)', border: 'rgba(245,158,11,0.4)', text: '#f59e0b' },
   error: { bg: 'rgba(239,68,68,0.15)', border: 'rgba(239,68,68,0.4)', text: '#ef4444' },
 };

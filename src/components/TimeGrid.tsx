@@ -193,7 +193,7 @@ export function TimeGrid() {
   const rowHeight = 'h-14';
 
   return (
-    <div className="glass-card overflow-hidden p-0">
+    <div className="glass-card glass-card-static overflow-hidden p-0">
       {/* Controls Toolbar */}
       <div className="px-4 py-3 border-b" style={{ borderColor: 'var(--glass-border)', background: 'var(--glass)' }}>
         <div className="flex flex-wrap items-center gap-3 sm:gap-4">
@@ -208,8 +208,8 @@ export function TimeGrid() {
             <select
               value={state.settings.primaryZoneId}
               onChange={(e) => updateSettings({ primaryZoneId: e.target.value })}
-              className="px-2.5 py-1.5 text-[11px] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#6c8fff]/40 focus:border-[#6c8fff]/60 transition-all"
-              style={{ background: 'var(--glass)', border: '1px solid var(--glass-border)', color: 'var(--text)' }}
+              className="px-2.5 py-1.5 text-[11px] rounded-lg focus:outline-none focus:ring-2 transition-all"
+              style={{ background: 'var(--glass)', border: '1px solid var(--glass-border)', color: 'var(--text)', '--tw-ring-color': 'var(--accent-glow)' } as React.CSSProperties}
             >
               {state.timezones.map((tz) => (
                 <option key={tz.id} value={tz.id} style={{ background: 'var(--bg-primary)' }}>
@@ -227,12 +227,8 @@ export function TimeGrid() {
                 <button
                   key={range}
                   onClick={() => updateSettings({ hourRange: range })}
-                  className={`px-2.5 py-1.5 text-[11px] font-medium transition-all ${
-                    state.settings.hourRange === range
-                      ? 'bg-[#6c8fff] text-white'
-                      : ''
-                  }`}
-                  style={state.settings.hourRange !== range ? { background: 'var(--glass)', color: 'var(--text-secondary)' } : {}}
+                  className={`px-2.5 py-1.5 text-[11px] font-medium transition-all`}
+                  style={state.settings.hourRange === range ? { background: 'var(--accent)', color: 'white' } : { background: 'var(--glass)', color: 'var(--text-secondary)' }}
                 >
                   {range}h
                 </button>
@@ -248,12 +244,8 @@ export function TimeGrid() {
                 <button
                   key={res}
                   onClick={() => updateSettings({ resolution: res })}
-                  className={`px-2.5 py-1.5 text-[11px] font-medium transition-all ${
-                    state.settings.resolution === res
-                      ? 'bg-[#6c8fff] text-white'
-                      : ''
-                  }`}
-                  style={state.settings.resolution !== res ? { background: 'var(--glass)', color: 'var(--text-secondary)' } : {}}
+                  className={`px-2.5 py-1.5 text-[11px] font-medium transition-all`}
+                  style={state.settings.resolution === res ? { background: 'var(--accent)', color: 'white' } : { background: 'var(--glass)', color: 'var(--text-secondary)' }}
                 >
                   {res}m
                 </button>
@@ -267,12 +259,8 @@ export function TimeGrid() {
               <button
                 key={format}
                 onClick={() => updateSettings({ timeFormat: format })}
-                className={`px-2.5 py-1.5 text-[11px] font-medium transition-all ${
-                  state.settings.timeFormat === format
-                    ? 'bg-[#6c8fff] text-white'
-                    : ''
-                }`}
-                style={state.settings.timeFormat !== format ? { background: 'var(--glass)', color: 'var(--text-secondary)' } : {}}
+                className={`px-2.5 py-1.5 text-[11px] font-medium transition-all`}
+                style={state.settings.timeFormat === format ? { background: 'var(--accent)', color: 'white' } : { background: 'var(--glass)', color: 'var(--text-secondary)' }}
               >
                 {format === '12h' ? 'AM/PM' : '24h'}
               </button>
@@ -282,10 +270,8 @@ export function TimeGrid() {
           {/* Business Hours Toggle */}
           <button
             onClick={() => updateSettings({ showBusinessHours: !state.settings.showBusinessHours })}
-            className={`px-2.5 py-1.5 text-[11px] font-medium rounded-lg transition-all ${
-              state.settings.showBusinessHours ? 'bg-[#6c8fff] text-white' : ''
-            }`}
-            style={!state.settings.showBusinessHours ? { background: 'var(--glass)', color: 'var(--text-secondary)', border: '1px solid var(--glass-border)' } : {}}
+            className={`px-2.5 py-1.5 text-[11px] font-medium rounded-lg transition-all`}
+            style={state.settings.showBusinessHours ? { background: 'var(--accent)', color: 'white' } : { background: 'var(--glass)', color: 'var(--text-secondary)', border: '1px solid var(--glass-border)' }}
             title="Toggle business/night hour shading"
           >
             Hours
@@ -310,7 +296,7 @@ export function TimeGrid() {
               </>
             )}
             <div className="flex items-center gap-1.5">
-              <div className="w-3 h-3 rounded-sm" style={{ background: 'var(--now-bg)', border: '1px solid rgba(255,111,216,0.5)' }}></div>
+              <div className="w-3 h-3 rounded-sm" style={{ background: 'var(--now-bg)', border: '1px solid rgba(56,178,172,0.5)' }}></div>
               <span className="font-medium">Now</span>
             </div>
           </div>
@@ -320,18 +306,18 @@ export function TimeGrid() {
       {/* Grid with single horizontal scroll */}
       <div className="flex">
         {/* Sticky Labels Column */}
-        <div className="sticky left-0 z-20 flex-shrink-0" style={{ background: 'var(--bg-primary)' }}>
+        <div className="sticky left-0 z-20 flex-shrink-0" style={{ background: 'var(--glass)', backdropFilter: 'blur(40px) saturate(180%)' }}>
           {/* Primary Zone Label */}
           {primaryRow && (
-            <div className={`w-32 sm:w-44 px-3 ${rowHeight} flex items-center gap-2.5`} style={{ background: 'rgba(108,143,255,0.1)', borderRight: '1px solid rgba(108,143,255,0.15)', borderBottom: '1px solid rgba(108,143,255,0.15)' }}>
+            <div className={`w-32 sm:w-44 px-3 ${rowHeight} flex items-center gap-2.5`} style={{ background: 'var(--accent-glow)', borderRight: '1px solid var(--glass-border)', borderBottom: '1px solid var(--glass-border)' }}>
               <span className="text-[18px]">{getCountryFlag(primaryRow.timezone.iana)}</span>
               <div className="flex-1 min-w-0">
                 <div className="font-semibold text-[13px] truncate" style={{ color: 'var(--text)' }}>
                   {primaryRow.timezone.city || primaryRow.timezone.label}
                 </div>
-                <div className="text-[10px] text-[#6c8fff] flex items-center gap-1.5">
+                <div className="text-[10px] flex items-center gap-1.5" style={{ color: 'var(--accent)' }}>
                   <span>{getTimezoneAbbreviation(primaryRow.timezone.iana)}</span>
-                  <span className="px-1.5 py-0.5 rounded bg-[rgba(108,143,255,0.2)] text-[#6c8fff] text-[9px] font-semibold">PRIMARY</span>
+                  <span className="px-1.5 py-0.5 rounded text-[9px] font-semibold" style={{ background: 'var(--accent-glow)', color: 'var(--accent)' }}>PRIMARY</span>
                 </div>
               </div>
             </div>
@@ -347,8 +333,8 @@ export function TimeGrid() {
                 key={row.timezone.id}
                 className={`w-32 sm:w-44 px-3 ${rowHeight} flex items-center gap-2.5 cursor-grab active:cursor-grabbing group transition-all ${
                   isDragging ? 'opacity-50' : ''
-                } ${isDragOver ? 'border-t-2 border-t-[#6c8fff]' : ''}`}
-                style={{ background: isDragging ? 'var(--glass)' : 'var(--bg-primary)', borderRight: '1px solid var(--glass-border)', borderBottom: '1px solid var(--glass-border)' }}
+                } ${isDragOver ? 'border-t-2' : ''}`}
+                style={{ background: isDragging ? 'var(--glass-hover)' : 'transparent', borderRight: '1px solid var(--glass-border)', borderBottom: '1px solid var(--glass-border)', borderTopColor: isDragOver ? 'var(--accent)' : 'transparent' }}
                 draggable
                 onDragStart={(e) => handleRowDragStart(e, row.timezone)}
                 onDragOver={(e) => handleRowDragOver(e, row.timezone)}
@@ -391,14 +377,14 @@ export function TimeGrid() {
           <div className="inline-block min-w-full">
             {/* Primary Row Cells */}
             {primaryRow && (
-              <div className="flex" style={{ borderBottom: '1px solid rgba(108,143,255,0.15)', background: 'rgba(108,143,255,0.05)' }}>
+              <div className="flex" style={{ borderBottom: '1px solid var(--glass-border)', background: 'var(--accent-glow)' }}>
                 {primaryRow.slots.map((slot, idx) => {
                   const isHourStart = slot.time.minute === 0;
                   const isDayStart = slot.time.hour === 0 && slot.time.minute === 0;
                   const isNow = idx === nowColumnIndex;
                   const isAnchor = idx === anchorColumnIndex;
 
-                  let bgStyle = { background: 'rgba(108,143,255,0.05)' };
+                  let bgStyle = { background: 'rgba(196,154,66,0.05)' };
                   if (isAnchor) {
                     bgStyle = { background: 'var(--anchor-bg)' };
                   } else if (isNow) {
@@ -412,15 +398,13 @@ export function TimeGrid() {
                   return (
                     <div
                       key={idx}
-                      className={`${cellWidth} ${rowHeight} flex-shrink-0 px-1 text-center flex flex-col items-center justify-center ${
-                        isDayStart ? 'border-l-2 border-l-[#6c8fff]' : ''
-                      }`}
-                      style={{ ...bgStyle, borderRight: '1px solid rgba(108,143,255,0.08)' }}
+                      className={`${cellWidth} ${rowHeight} flex-shrink-0 px-1 text-center flex flex-col items-center justify-center`}
+                      style={{ ...bgStyle, borderRight: '1px solid var(--glass-border)', borderLeft: isDayStart ? '2px solid var(--accent)' : 'none' }}
                       onMouseEnter={(e) => handleCellHover(e, primaryRow.timezone.id, idx)}
                       onMouseLeave={handleCellLeave}
                     >
                       {isDayStart && (
-                        <div className="text-[9px] font-medium text-[#6c8fff]">
+                        <div className="text-[9px] font-medium" style={{ color: 'var(--accent)' }}>
                           {slot.time.toFormat('EEE d')}
                         </div>
                       )}
@@ -428,7 +412,7 @@ export function TimeGrid() {
                         {slot.time.toFormat(timeFormatString)}
                       </div>
                       {isDayStart && (
-                        <div className="text-[9px] text-[#6c8fff] font-medium">
+                        <div className="text-[9px] font-medium" style={{ color: 'var(--accent)' }}>
                           {slot.isToday ? 'Today' : slot.isTomorrow ? 'Tomorrow' : slot.isYesterday ? 'Yesterday' : ''}
                         </div>
                       )}
@@ -448,8 +432,8 @@ export function TimeGrid() {
                   key={row.timezone.id} 
                   className={`flex last:border-b-0 transition-all ${
                     isDragging ? 'opacity-50' : ''
-                  } ${isDragOver ? 'border-t-2 border-t-[#6c8fff]' : ''}`}
-                  style={{ borderBottom: '1px solid var(--glass-border)' }}
+                  } ${isDragOver ? 'border-t-2' : ''}`}
+                  style={{ borderBottom: '1px solid var(--glass-border)', borderTopColor: isDragOver ? 'var(--accent)' : 'transparent' }}
                 >
                   {row.slots.map((slot, idx) => {
                     const isNow = idx === nowColumnIndex;
@@ -471,10 +455,8 @@ export function TimeGrid() {
                     return (
                       <div
                         key={idx}
-                        className={`${cellWidth} ${rowHeight} flex-shrink-0 px-1 text-center transition-colors cursor-pointer flex flex-col items-center justify-center ${
-                          isDayStart ? 'border-l-2 border-l-[rgba(108,143,255,0.4)]' : ''
-                        }`}
-                        style={{ ...bgStyle, borderRight: '1px solid var(--glass-border)' }}
+                        className={`${cellWidth} ${rowHeight} flex-shrink-0 px-1 text-center transition-colors cursor-pointer flex flex-col items-center justify-center`}
+                        style={{ ...bgStyle, borderRight: '1px solid var(--glass-border)', borderLeft: isDayStart ? '2px solid var(--accent)' : 'none' }}
                         onMouseEnter={(e) => handleCellHover(e, row.timezone.id, idx)}
                         onMouseLeave={handleCellLeave}
                       >
@@ -482,7 +464,7 @@ export function TimeGrid() {
                           {slot.time.toFormat(timeFormatString)}
                         </div>
                         {isDayStart && (
-                          <div className="text-[9px] text-[#6c8fff] font-medium">
+                          <div className="text-[9px] font-medium" style={{ color: 'var(--accent)' }}>
                             {slot.isToday ? 'Today' : slot.isTomorrow ? 'Tomorrow' : slot.isYesterday ? 'Yesterday' : slot.time.toFormat('EEE')}
                           </div>
                         )}
