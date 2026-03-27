@@ -50,11 +50,9 @@ function reducer(state: AppState, action: Action): AppState {
 
     case 'RESET_TO_NOW': {
       const now = DateTime.now();
-      const res = state.settings.resolution;
-      const snapped = now.set({ minute: Math.floor(now.minute / res) * res, second: 0, millisecond: 0 });
       return {
         ...state,
-        anchorTime: snapped.toISO()!,
+        anchorTime: now.set({ second: 0, millisecond: 0 }).toISO()!,
       };
     }
 
@@ -91,6 +89,15 @@ export function AppProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     saveState({ timezones: state.timezones, settings: state.settings });
   }, [state.timezones, state.settings]);
+
+  // Auto-set primary zone: if only one exists or current primary was removed
+  useEffect(() => {
+    if (state.timezones.length === 0) return;
+    const primaryExists = state.timezones.some((tz) => tz.id === state.settings.primaryZoneId);
+    if (!primaryExists || state.timezones.length === 1) {
+      dispatch({ type: 'UPDATE_SETTINGS', payload: { primaryZoneId: state.timezones[0].id } });
+    }
+  }, [state.timezones, state.settings.primaryZoneId]);
 
   // Only auto-tick anchor time when the user hasn't manually adjusted it
   useEffect(() => {

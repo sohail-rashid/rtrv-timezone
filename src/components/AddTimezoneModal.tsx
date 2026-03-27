@@ -1,7 +1,8 @@
 import { useState, useRef, useEffect } from 'react';
 import { useApp } from '../context/AppContext';
+import { useToast } from '../context/ToastContext';
 import { COMMON_TIMEZONES, PRESET_TIMEZONES, type TimezoneEntry } from '../types';
-import { searchTimezones, generateTimezoneId } from '../utils/timezone';
+import { searchTimezones, generateTimezoneId, getCurrentTimeInZone, formatTime, getCountryFlag, getOffsetString } from '../utils/timezone';
 
 interface AddTimezoneModalProps {
   isOpen: boolean;
@@ -10,6 +11,7 @@ interface AddTimezoneModalProps {
 
 export function AddTimezoneModal({ isOpen, onClose }: AddTimezoneModalProps) {
   const { addTimezone, state } = useApp();
+  const { addToast } = useToast();
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<typeof COMMON_TIMEZONES>([]);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -32,6 +34,7 @@ export function AddTimezoneModal({ isOpen, onClose }: AddTimezoneModalProps) {
   const handleAddTimezone = (iana: string, label: string) => {
     // Check if already added
     if (state.timezones.some((tz) => tz.iana === iana)) {
+      addToast(`${label} is already added`, 'warning');
       onClose();
       return;
     }
@@ -42,13 +45,15 @@ export function AddTimezoneModal({ isOpen, onClose }: AddTimezoneModalProps) {
       label,
     };
     addTimezone(newTz);
+    addToast(`Added ${label}`, 'success');
     setQuery('');
     onClose();
   };
 
   const handlePresetClick = (preset: TimezoneEntry) => {
     if (state.timezones.some((tz) => tz.iana === preset.iana)) {
-      return; // Already added
+      addToast(`${preset.city || preset.label} is already added`, 'warning');
+      return;
     }
 
     const newTz: TimezoneEntry = {
@@ -58,6 +63,7 @@ export function AddTimezoneModal({ isOpen, onClose }: AddTimezoneModalProps) {
       city: preset.city,
     };
     addTimezone(newTz);
+    addToast(`Added ${preset.city || preset.label}`, 'success');
     onClose();
   };
 
@@ -75,14 +81,14 @@ export function AddTimezoneModal({ isOpen, onClose }: AddTimezoneModalProps) {
     <div className="fixed inset-0 z-50 overflow-y-auto">
       {/* Backdrop */}
       <div 
-        className="fixed inset-0 bg-black/50 backdrop-blur-sm transition-opacity"
+        className="fixed inset-0 bg-black/50 backdrop-blur-sm modal-backdrop-enter"
         onClick={onClose}
       />
 
       {/* Modal */}
       <div className="flex min-h-full items-center justify-center p-4">
         <div 
-          className="relative w-full max-w-lg transform rounded-2xl shadow-2xl transition-all"
+          className="relative w-full max-w-lg rounded-2xl shadow-2xl modal-content-enter"
           style={{ background: 'var(--bg-card)', border: '1px solid var(--glass-border)', backdropFilter: 'blur(20px)' }}
           onClick={(e) => e.stopPropagation()}
         >
@@ -119,17 +125,27 @@ export function AddTimezoneModal({ isOpen, onClose }: AddTimezoneModalProps) {
             </div>
 
             {/* Search Results */}
+            {query.trim() && results.length === 0 && (
+              <div className="mt-3 p-6 text-center rounded-xl" style={{ border: '1px solid var(--glass-border)', background: 'var(--glass)' }}>
+                <div className="text-2xl mb-2">🔍</div>
+                <div className="text-sm font-medium" style={{ color: 'var(--text)' }}>No timezones found</div>
+                <div className="text-xs mt-1" style={{ color: 'var(--text-muted)' }}>Try searching by city name, country, or abbreviation (e.g. "PST", "London")</div>
+              </div>
+            )}
             {results.length > 0 && (
               <div className="mt-3 max-h-48 overflow-y-auto rounded-xl" style={{ border: '1px solid var(--glass-border)' }}>
                 {results.map((tz, idx) => {
                   const isAdded = state.timezones.some((t) => t.iana === tz.iana);
+                  const currentTime = getCurrentTimeInZone(tz.iana);
+                  const flag = getCountryFlag(tz.iana);
+                  const offset = getOffsetString(tz.iana);
                   return (
                     <button
                       key={tz.iana}
                       onClick={() => handleAddTimezone(tz.iana, tz.label)}
                       disabled={isAdded}
-                      className={`w-full px-4 py-3 text-left flex items-center justify-between transition-colors ${
-                        isAdded ? 'cursor-not-allowed' : ''
+                      className={`w-full px-4 py-3 text-left flex items-center gap-3 transition-colors hover:bg-[rgba(108,143,255,0.08)] ${
+                        isAdded ? 'cursor-not-allowed opacity-60' : ''
                       }`}
                       style={{ 
                         background: isAdded ? 'var(--glass)' : 'transparent',
@@ -137,15 +153,22 @@ export function AddTimezoneModal({ isOpen, onClose }: AddTimezoneModalProps) {
                         color: isAdded ? 'var(--text-muted)' : 'var(--text)'
                       }}
                     >
-                      <div>
-                        <div className="font-medium">{tz.label}</div>
-                        <div className="text-sm" style={{ color: 'var(--text-muted)' }}>{tz.iana}</div>
+                      <span className="text-xl flex-shrink-0">{flag}</span>
+                      <div className="flex-1 min-w-0">
+                        <div className="font-medium text-[14px] truncate">{tz.label}</div>
+                        <div className="text-[11px]" style={{ color: 'var(--text-muted)' }}>{tz.iana} · {offset}</div>
                       </div>
-                      {isAdded && (
-                        <span className="text-xs font-medium px-2 py-1 rounded-full" style={{ background: 'var(--glass)', color: 'var(--text-muted)' }}>
-                          Added
-                        </span>
-                      )}
+                      <div className="flex-shrink-0 text-right">
+                        {isAdded ? (
+                          <span className="text-[11px] font-medium px-2 py-1 rounded-full" style={{ background: 'var(--glass)', color: 'var(--text-muted)' }}>
+                            Added
+                          </span>
+                        ) : (
+                          <div className="font-mono-time text-[13px] font-medium" style={{ color: 'var(--accent)' }}>
+                            {formatTime(currentTime, state.settings.timeFormat)}
+                          </div>
+                        )}
+                      </div>
                     </button>
                   );
                 })}
@@ -159,21 +182,28 @@ export function AddTimezoneModal({ isOpen, onClose }: AddTimezoneModalProps) {
             <div className="flex flex-wrap gap-2">
               {PRESET_TIMEZONES.map((preset) => {
                 const isAdded = state.timezones.some((t) => t.iana === preset.iana);
+                const currentTime = getCurrentTimeInZone(preset.iana);
+                const flag = getCountryFlag(preset.iana);
                 return (
                   <button
                     key={preset.id}
                     onClick={() => handlePresetClick(preset)}
                     disabled={isAdded}
-                    className={`px-3 py-1.5 text-sm font-medium rounded-full transition-all ${
-                      isAdded ? 'cursor-not-allowed' : 'hover:text-[#6c8fff]'
+                    className={`px-3 py-1.5 text-sm font-medium rounded-full transition-all flex items-center gap-1.5 ${
+                      isAdded ? 'cursor-not-allowed opacity-60' : 'hover:text-[#6c8fff] hover:border-[rgba(108,143,255,0.4)]'
                     }`}
                     style={{ 
                       background: 'var(--glass)', 
                       color: isAdded ? 'var(--text-muted)' : 'var(--text-secondary)',
                       border: '1px solid var(--glass-border)'
                     }}
+                    title={`${preset.city || preset.label} — ${formatTime(currentTime, state.settings.timeFormat)}`}
                   >
-                    {preset.city || preset.label}
+                    <span className="text-[14px]">{flag}</span>
+                    <span>{preset.city || preset.label}</span>
+                    <span className="font-mono-time text-[11px]" style={{ color: 'var(--accent)', opacity: isAdded ? 0.5 : 1 }}>
+                      {formatTime(currentTime, state.settings.timeFormat)}
+                    </span>
                   </button>
                 );
               })}

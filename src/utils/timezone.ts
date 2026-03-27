@@ -1,4 +1,29 @@
 import { DateTime } from 'luxon';
+import { COMMON_TIMEZONES } from '../types';
+
+/**
+ * Detect the user's local IANA timezone and return a TimezoneEntry-like object
+ */
+export function detectUserTimezone(): { id: string; iana: string; label: string; city?: string } {
+  try {
+    const iana = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    if (!iana) throw new Error('No timezone detected');
+
+    // Try to find a nice label from our known list
+    const known = COMMON_TIMEZONES.find((tz) => tz.iana === iana);
+    if (known) {
+      const city = known.label.replace(/\s*\(.*\)/, ''); // strip parenthetical
+      return { id: `local-${iana.toLowerCase().replace(/\//g, '-')}`, iana, label: `${known.label} (You)`, city };
+    }
+
+    // Fallback: derive a label from the IANA string
+    const city = iana.split('/').pop()?.replace(/_/g, ' ') || iana;
+    return { id: `local-${iana.toLowerCase().replace(/\//g, '-')}`, iana, label: `${city} (You)`, city };
+  } catch {
+    // Fallback to ET
+    return { id: 'et', iana: 'America/New_York', label: 'Eastern Time', city: 'New York' };
+  }
+}
 
 /**
  * Get the current time in a specific timezone
@@ -27,6 +52,28 @@ export function getOffsetString(iana: string, dt?: DateTime): string {
     return `GMT${sign}${hours}`;
   }
   return `GMT${sign}${hours}:${minutes.toString().padStart(2, '0')}`;
+}
+
+/**
+ * Get the offset of a timezone relative to another timezone (e.g., "+5:30h", "−3h", "same time")
+ */
+export function getRelativeOffset(targetIana: string, primaryIana: string, dt?: DateTime): string {
+  const now = dt || DateTime.now();
+  const targetOffset = now.setZone(targetIana).offset;
+  const primaryOffset = now.setZone(primaryIana).offset;
+  const diff = targetOffset - primaryOffset;
+
+  if (diff === 0) return 'same time';
+
+  const sign = diff > 0 ? '+' : '−';
+  const absDiff = Math.abs(diff);
+  const hours = Math.floor(absDiff / 60);
+  const minutes = absDiff % 60;
+
+  if (minutes === 0) {
+    return `${sign}${hours}h`;
+  }
+  return `${sign}${hours}:${minutes.toString().padStart(2, '0')}h`;
 }
 
 /**

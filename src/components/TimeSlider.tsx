@@ -3,7 +3,12 @@ import { DateTime } from 'luxon';
 import { useApp } from '../context/AppContext';
 import { getCountryFlag } from '../utils/timezone';
 
-export function TimeSlider() {
+interface TimeSliderProps {
+  onOpenDatePicker: () => void;
+  onOpenTimePicker: () => void;
+}
+
+export function TimeSlider({ onOpenDatePicker, onOpenTimePicker }: TimeSliderProps) {
   const { state, setAnchorTime, getPrimaryZone, resetToNow } = useApp();
   const sliderRef = useRef<HTMLDivElement>(null);
   const [isDragging, setIsDragging] = useState(false);
@@ -131,12 +136,27 @@ export function TimeSlider() {
           <button onClick={() => adjustTime(30)} className="glass-btn font-mono-time text-[12px]">+30m</button>
           <button onClick={() => adjustTime(60)} className="glass-btn font-mono-time text-[12px]">+1h</button>
           <button onClick={() => adjustDays(1)} className="glass-btn font-mono-time text-[12px]">Day ▶</button>
+          {/* Date Picker Trigger */}
+          <button
+            onClick={onOpenDatePicker}
+            className="glass-btn font-mono-time text-[12px]"
+            title="Jump to date"
+          >
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            </svg>
+            <span className="hidden sm:inline">Date</span>
+          </button>
         </div>
       </div>
 
       {/* Main Time Display */}
       <div className="mt-5 flex items-baseline gap-4">
-        <span className="font-mono-time text-[72px] font-medium leading-none tracking-tight bg-gradient-to-br from-[var(--accent)] to-[var(--accent2)] bg-clip-text text-transparent">
+        <span
+          className="font-mono-time text-[72px] font-medium leading-none tracking-tight bg-gradient-to-br from-[var(--accent)] to-[var(--accent2)] bg-clip-text text-transparent cursor-pointer hover:opacity-80 transition-opacity"
+          title="Click to set time"
+          onClick={onOpenTimePicker}
+        >
           {timeInZone.toFormat(timeFormat)}
         </span>
         {state.settings.timeFormat === '12h' && (
@@ -145,7 +165,15 @@ export function TimeSlider() {
           </span>
         )}
       </div>
-      <div className="text-[14px] mt-1" style={{ color: 'var(--text-muted)' }}>
+      <div
+        className="text-[14px] mt-1 cursor-pointer hover:text-[var(--accent)] transition-colors inline-flex items-center gap-1.5"
+        style={{ color: 'var(--text-muted)' }}
+        onClick={onOpenDatePicker}
+        title="Click to change date"
+      >
+        <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+          <path strokeLinecap="round" strokeLinejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+        </svg>
         {timeInZone.toFormat('EEEE, MMMM d, yyyy')}
       </div>
 

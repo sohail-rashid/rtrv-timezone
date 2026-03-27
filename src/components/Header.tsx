@@ -1,4 +1,8 @@
 import { useTheme } from '../context/ThemeContext';
+import { useApp } from '../context/AppContext';
+import { useToast } from '../context/ToastContext';
+import { exportTimeSummary } from '../utils/timezone';
+import { DateTime } from 'luxon';
 
 interface HeaderProps {
   onAddTimezone: () => void;
@@ -6,11 +10,28 @@ interface HeaderProps {
 
 export function Header({ onAddTimezone }: HeaderProps) {
   const { theme, setTheme } = useTheme();
+  const { state } = useApp();
+  const { addToast } = useToast();
 
   const cycleTheme = () => {
     if (theme === 'light') setTheme('dark');
     else if (theme === 'dark') setTheme('system');
     else setTheme('light');
+  };
+
+  const handleCopySummary = async () => {
+    if (state.timezones.length === 0) {
+      addToast('No timezones to export', 'warning');
+      return;
+    }
+    const anchorTime = DateTime.fromISO(state.anchorTime);
+    const summary = exportTimeSummary(anchorTime, state.timezones);
+    try {
+      await navigator.clipboard.writeText(summary);
+      addToast('Time summary copied to clipboard', 'success');
+    } catch {
+      addToast('Failed to copy to clipboard', 'error');
+    }
   };
 
   const getThemeIcon = () => {
@@ -58,6 +79,18 @@ export function Header({ onAddTimezone }: HeaderProps) {
             >
               <span>{getThemeIcon()}</span>
               <span className="hidden sm:inline">{getThemeLabel()}</span>
+            </button>
+
+            {/* Copy Summary Button */}
+            <button
+              onClick={handleCopySummary}
+              className="glass-btn"
+              title="Copy time summary to clipboard"
+            >
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
+              </svg>
+              <span className="hidden sm:inline">Copy</span>
             </button>
 
             {/* Add Timezone Button */}

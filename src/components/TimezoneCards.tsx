@@ -1,11 +1,17 @@
 import { useState, useEffect } from 'react';
 import { DateTime } from 'luxon';
 import { useApp } from '../context/AppContext';
+import { useToast } from '../context/ToastContext';
 import type { TimezoneEntry } from '../types';
-import { getCurrentTimeInZone, getOffsetString, getTimezoneAbbreviation, getCountryFlag } from '../utils/timezone';
+import { getCurrentTimeInZone, getOffsetString, getTimezoneAbbreviation, getCountryFlag, getRelativeOffset } from '../utils/timezone';
 
-export function TimezoneCards() {
+interface TimezoneCardsProps {
+  onAddTimezone?: () => void;
+}
+
+export function TimezoneCards({ onAddTimezone }: TimezoneCardsProps) {
   const { state, removeTimezone, reorderTimezones, updateSettings } = useApp();
+  const { addToast } = useToast();
   const [currentTimes, setCurrentTimes] = useState<Map<string, DateTime>>(new Map());
   const [draggedItem, setDraggedItem] = useState<TimezoneEntry | null>(null);
   const [removingId, setRemovingId] = useState<string | null>(null);
@@ -26,10 +32,12 @@ export function TimezoneCards() {
   }, [state.timezones]);
 
   const handleRemove = (id: string) => {
+    const tz = state.timezones.find((t) => t.id === id);
     setRemovingId(id);
     setTimeout(() => {
       removeTimezone(id);
       setRemovingId(null);
+      addToast(`Removed ${tz?.city || tz?.label || 'timezone'}`, 'info');
     }, 200);
   };
 
@@ -68,24 +76,26 @@ export function TimezoneCards() {
 
   if (state.timezones.length === 0) {
     return (
-      <div className="glass-card p-8 text-center">
+      <div className="glass-card p-8 text-center cursor-pointer" onClick={onAddTimezone}>
         <div className="w-16 h-16 mx-auto mb-4 rounded-2xl flex items-center justify-center" style={{ background: 'var(--glass)' }}>
           <span className="text-3xl">🕐</span>
         </div>
         <h3 className="text-lg font-semibold mb-2" style={{ color: 'var(--text)' }}>No Timezones Added</h3>
-        <p style={{ color: 'var(--text-muted)' }}>Click "Add Zone" to get started</p>
+        <p style={{ color: 'var(--text-muted)' }}>Click here to add timezones</p>
       </div>
     );
   }
 
   return (
-    <div className="grid gap-3.5 grid-cols-5">
+    <div className="grid gap-3.5 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
       {state.timezones.map((tz, index) => {
         const time = currentTimes.get(tz.id);
         const isPrimary = state.settings.primaryZoneId === tz.id;
         const isRemoving = removingId === tz.id;
         const isDragging = draggedItem?.id === tz.id;
         const flag = getCountryFlag(tz.iana);
+        const primaryZone = state.timezones.find((t) => t.id === state.settings.primaryZoneId);
+        const relOffset = primaryZone && !isPrimary ? getRelativeOffset(tz.iana, primaryZone.iana) : null;
 
         return (
           <div
@@ -170,6 +180,12 @@ export function TimezoneCards() {
                 {/* Offset Badge */}
                 <div className="inline-flex items-center gap-1.5 mt-3 px-2.5 py-1 rounded-lg text-[11px] font-mono-time" style={{ background: 'var(--glass)', color: 'var(--text-muted)' }}>
                   {getTimezoneAbbreviation(tz.iana, time)} · {getOffsetString(tz.iana, time)}
+                  {relOffset && (
+                    <span className="ml-1 font-semibold" style={{ color: 'var(--accent)' }}>({relOffset})</span>
+                  )}
+                  {isPrimary && (
+                    <span className="ml-1 font-semibold" style={{ color: 'var(--accent)' }}>(you)</span>
+                  )}
                 </div>
               </>
             )}
