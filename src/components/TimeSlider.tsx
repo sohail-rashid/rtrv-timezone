@@ -3,7 +3,12 @@ import { DateTime } from 'luxon';
 import { useApp } from '../context/AppContext';
 import { getCountryFlag } from '../utils/timezone';
 
-export function TimeSlider() {
+interface TimeSliderProps {
+  onOpenDatePicker: () => void;
+  onOpenTimePicker: () => void;
+}
+
+export function TimeSlider({ onOpenDatePicker, onOpenTimePicker }: TimeSliderProps) {
   const { state, setAnchorTime, getPrimaryZone, resetToNow } = useApp();
   const sliderRef = useRef<HTMLDivElement>(null);
   const [isDragging, setIsDragging] = useState(false);
@@ -117,7 +122,7 @@ export function TimeSlider() {
           <span className="text-[13px] font-semibold" style={{ color: 'var(--text)' }}>
             {primaryZone.city || primaryZone.label}
           </span>
-          <span className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-[rgba(108,143,255,0.2)] text-[#6c8fff] tracking-wide">
+          <span className="text-[10px] font-semibold px-2 py-0.5 rounded-md tracking-wide" style={{ background: 'var(--accent-glow)', color: 'var(--accent)' }}>
             PRIMARY
           </span>
         </div>
@@ -131,12 +136,27 @@ export function TimeSlider() {
           <button onClick={() => adjustTime(30)} className="glass-btn font-mono-time text-[12px]">+30m</button>
           <button onClick={() => adjustTime(60)} className="glass-btn font-mono-time text-[12px]">+1h</button>
           <button onClick={() => adjustDays(1)} className="glass-btn font-mono-time text-[12px]">Day ▶</button>
+          {/* Date Picker Trigger */}
+          <button
+            onClick={onOpenDatePicker}
+            className="glass-btn font-mono-time text-[12px]"
+            title="Jump to date"
+          >
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            </svg>
+            <span className="hidden sm:inline">Date</span>
+          </button>
         </div>
       </div>
 
       {/* Main Time Display */}
       <div className="mt-5 flex items-baseline gap-4">
-        <span className="font-mono-time text-[72px] font-medium leading-none tracking-tight bg-gradient-to-br from-[var(--accent)] to-[var(--accent2)] bg-clip-text text-transparent">
+        <span
+          className="font-mono-time text-[72px] font-medium leading-none tracking-tight bg-gradient-to-br from-[var(--accent)] to-[var(--accent2)] bg-clip-text text-transparent cursor-pointer hover:opacity-80 transition-opacity"
+          title="Click to set time"
+          onClick={onOpenTimePicker}
+        >
           {timeInZone.toFormat(timeFormat)}
         </span>
         {state.settings.timeFormat === '12h' && (
@@ -145,7 +165,15 @@ export function TimeSlider() {
           </span>
         )}
       </div>
-      <div className="text-[14px] mt-1" style={{ color: 'var(--text-muted)' }}>
+      <div
+        className="text-[14px] mt-1 cursor-pointer hover:text-[var(--accent)] transition-colors inline-flex items-center gap-1.5"
+        style={{ color: 'var(--text-muted)' }}
+        onClick={onOpenDatePicker}
+        title="Click to change date"
+      >
+        <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+          <path strokeLinecap="round" strokeLinejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+        </svg>
         {timeInZone.toFormat('EEEE, MMMM d, yyyy')}
       </div>
 
@@ -169,8 +197,8 @@ export function TimeSlider() {
           <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 h-1 rounded-full" style={{ background: 'var(--glass-border)' }}>
             {/* Progress fill with gradient */}
             <div 
-              className="absolute inset-y-0 left-0 rounded-full bg-gradient-to-r from-[#6c8fff] to-[#ff6fd8] transition-all duration-75"
-              style={{ width: `${sliderPosition}%` }}
+              className="absolute inset-y-0 left-0 rounded-full transition-all duration-75"
+              style={{ width: `${sliderPosition}%`, background: `linear-gradient(90deg, var(--accent), var(--accent2))` }}
             />
             
             {/* Now marker */}
@@ -190,7 +218,7 @@ export function TimeSlider() {
             style={{ left: `${sliderPosition}%` }}
           >
             <div className={`w-[18px] h-[18px] bg-white rounded-full shadow-lg ${
-              isDragging ? 'shadow-[0_2px_12px_rgba(108,143,255,0.5)]' : 'shadow-[0_2px_8px_rgba(0,0,0,0.3)]'
+              isDragging ? 'shadow-[0_2px_12px_rgba(196,154,66,0.5)]' : 'shadow-[0_2px_8px_rgba(0,0,0,0.3)]'
             }`} />
             {/* Tooltip on drag */}
             {isDragging && (

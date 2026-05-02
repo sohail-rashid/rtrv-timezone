@@ -7,7 +7,7 @@ import { resolve } from 'path'
 export default defineConfig({
   plugins: [react(), tailwindcss()],
   build: {
-    outDir: 'src/chromeExtention',
+    outDir: 'src/chromeExtension',
     emptyOutDir: false, // Don't delete manifest.json and icons
     rollupOptions: {
       input: {

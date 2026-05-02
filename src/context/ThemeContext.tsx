@@ -1,4 +1,5 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
+import { applyColorTheme, getDefaultColorTheme } from '../utils/themes';
 
 type Theme = 'light' | 'dark' | 'system';
 
@@ -6,6 +7,8 @@ interface ThemeContextType {
   theme: Theme;
   resolvedTheme: 'light' | 'dark';
   setTheme: (theme: Theme) => void;
+  colorTheme: string;
+  setColorTheme: (id: string) => void;
 }
 
 const ThemeContext = createContext<ThemeContextType | null>(null);
@@ -26,6 +29,8 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     return 'system';
   });
 
+  const [colorTheme, setColorThemeState] = useState<string>(() => getDefaultColorTheme());
+
   const [resolvedTheme, setResolvedTheme] = useState<'light' | 'dark'>(() => {
     if (theme === 'system') return getSystemTheme();
     return theme;
@@ -39,7 +44,8 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     document.documentElement.classList.add(resolved);
     
     localStorage.setItem('world-clock-theme', theme);
-  }, [theme]);
+    applyColorTheme(colorTheme, resolved);
+  }, [theme, colorTheme]);
 
   useEffect(() => {
     if (theme !== 'system') return;
@@ -50,18 +56,24 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
       setResolvedTheme(newTheme);
       document.documentElement.classList.remove('light', 'dark');
       document.documentElement.classList.add(newTheme);
+      applyColorTheme(colorTheme, newTheme);
     };
 
     mediaQuery.addEventListener('change', handler);
     return () => mediaQuery.removeEventListener('change', handler);
-  }, [theme]);
+  }, [theme, colorTheme]);
 
   const setTheme = (newTheme: Theme) => {
     setThemeState(newTheme);
   };
 
+  const setColorTheme = (id: string) => {
+    setColorThemeState(id);
+    localStorage.setItem('world-clock-color-theme', id);
+  };
+
   return (
-    <ThemeContext.Provider value={{ theme, resolvedTheme, setTheme }}>
+    <ThemeContext.Provider value={{ theme, resolvedTheme, setTheme, colorTheme, setColorTheme }}>
       {children}
     </ThemeContext.Provider>
   );

@@ -1,13 +1,22 @@
 import type { AppState } from '../types';
 import { DEFAULT_TIMEZONES, DEFAULT_SETTINGS } from '../types';
 import { DateTime } from 'luxon';
+import { detectUserTimezone } from './timezone';
 
 const STORAGE_KEY = 'world-clock-planner-state';
 
 export function getDefaultState(): AppState {
+  const localTz = detectUserTimezone();
+
+  // Build default list: user's local zone first, then the standard defaults (deduped)
+  const defaults = [localTz, ...DEFAULT_TIMEZONES.filter((tz) => tz.iana !== localTz.iana)];
+
   return {
-    timezones: DEFAULT_TIMEZONES,
-    settings: DEFAULT_SETTINGS,
+    timezones: defaults,
+    settings: {
+      ...DEFAULT_SETTINGS,
+      primaryZoneId: localTz.id, // user's detected zone is primary
+    },
     anchorTime: DateTime.now().toISO()!,
   };
 }

@@ -1,16 +1,39 @@
 import { useTheme } from '../context/ThemeContext';
+import { useApp } from '../context/AppContext';
+import { useToast } from '../context/ToastContext';
+import { exportTimeSummary } from '../utils/timezone';
+import { COLOR_THEMES } from '../utils/themes';
+import { DateTime } from 'luxon';
 
 interface HeaderProps {
   onAddTimezone: () => void;
+  onOpenThemePicker: () => void;
 }
 
-export function Header({ onAddTimezone }: HeaderProps) {
-  const { theme, setTheme } = useTheme();
+export function Header({ onAddTimezone, onOpenThemePicker }: HeaderProps) {
+  const { theme, setTheme, colorTheme, resolvedTheme } = useTheme();
+  const { state } = useApp();
+  const { addToast } = useToast();
 
   const cycleTheme = () => {
     if (theme === 'light') setTheme('dark');
     else if (theme === 'dark') setTheme('system');
     else setTheme('light');
+  };
+
+  const handleCopySummary = async () => {
+    if (state.timezones.length === 0) {
+      addToast('No timezones to export', 'warning');
+      return;
+    }
+    const anchorTime = DateTime.fromISO(state.anchorTime);
+    const summary = exportTimeSummary(anchorTime, state.timezones);
+    try {
+      await navigator.clipboard.writeText(summary);
+      addToast('Time summary copied to clipboard', 'success');
+    } catch {
+      addToast('Failed to copy to clipboard', 'error');
+    }
   };
 
   const getThemeIcon = () => {
@@ -31,7 +54,7 @@ export function Header({ onAddTimezone }: HeaderProps) {
         <div className="flex items-center justify-between h-16">
           {/* Logo & Title */}
           <div className="flex items-center gap-3">
-            <div className="w-11 h-11 rounded-[14px] bg-gradient-to-br from-[#6c8fff] to-[#ff6fd8] flex items-center justify-center shadow-lg shadow-[rgba(108,143,255,0.35)]">
+            <div className="w-11 h-11 rounded-[14px] flex items-center justify-center shadow-lg" style={{ background: `linear-gradient(135deg, var(--accent), var(--accent2))`, boxShadow: `0 4px 16px var(--accent-glow)` }}>
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <circle cx="12" cy="12" r="9" stroke="white" strokeWidth="1.5"/>
                 <ellipse cx="12" cy="12" rx="3.5" ry="9" stroke="white" strokeWidth="1.5"/>
@@ -50,6 +73,25 @@ export function Header({ onAddTimezone }: HeaderProps) {
 
           {/* Actions */}
           <div className="flex items-center gap-2.5">
+            {/* Color Theme Picker */}
+            {(() => {
+              const currentTheme = COLOR_THEMES.find((t) => t.id === colorTheme) || COLOR_THEMES[0];
+              const previewColor = resolvedTheme === 'dark' ? currentTheme.preview.dark : currentTheme.preview.light;
+              return (
+                <button
+                  onClick={onOpenThemePicker}
+                  className="glass-btn"
+                  title={`Theme: ${currentTheme.name}`}
+                >
+                  <div
+                    className="w-4 h-4 rounded-full"
+                    style={{ background: previewColor, boxShadow: `0 0 8px ${previewColor}40` }}
+                  />
+                  <span className="hidden sm:inline">{currentTheme.name}</span>
+                </button>
+              );
+            })()}
+
             {/* Theme Toggle Button */}
             <button
               onClick={cycleTheme}
@@ -58,6 +100,18 @@ export function Header({ onAddTimezone }: HeaderProps) {
             >
               <span>{getThemeIcon()}</span>
               <span className="hidden sm:inline">{getThemeLabel()}</span>
+            </button>
+
+            {/* Copy Summary Button */}
+            <button
+              onClick={handleCopySummary}
+              className="glass-btn"
+              title="Copy time summary to clipboard"
+            >
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
+              </svg>
+              <span className="hidden sm:inline">Copy</span>
             </button>
 
             {/* Add Timezone Button */}

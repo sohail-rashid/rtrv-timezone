@@ -8,7 +8,6 @@ export interface TimezoneEntry {
 }
 
 export interface AppSettings {
-  theme: 'light' | 'dark' | 'system';
   hourRange: 12 | 24 | 48;
   resolution: 30 | 60;
   showBusinessHours: boolean;
@@ -41,7 +40,6 @@ export const PRESET_TIMEZONES: TimezoneEntry[] = [
 ];
 
 export const DEFAULT_SETTINGS: AppSettings = {
-  theme: 'system',
   hourRange: 24,
   resolution: 60,
   showBusinessHours: true,
