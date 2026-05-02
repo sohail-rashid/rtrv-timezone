@@ -227,6 +227,25 @@ body {
   display: none;
 }
 
+/* Glassmorphism horizontal scrollbar */
+.scrollbar-glass::-webkit-scrollbar {
+  height: 6px;
+}
+.scrollbar-glass::-webkit-scrollbar-track {
+  background: transparent;
+}
+.scrollbar-glass::-webkit-scrollbar-thumb {
+  background: var(--glass-border-hover, rgba(128,128,128,0.3));
+  border-radius: 9999px;
+}
+.scrollbar-glass::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted, rgba(128,128,128,0.5));
+}
+.scrollbar-glass {
+  scrollbar-width: thin;
+  scrollbar-color: var(--glass-border-hover, rgba(128,128,128,0.3)) transparent;
+}
+
 /* Font smoothing */
 html {
   -webkit-font-smoothing: antialiased;

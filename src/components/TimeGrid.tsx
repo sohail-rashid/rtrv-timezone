@@ -365,7 +365,7 @@ export function TimeGrid() {
         {/* Scrollable Time Cells Container - single scroll for all rows */}
         <div 
           ref={scrollContainerRef}
-          className="flex-1 overflow-x-auto scrollbar-hide"
+          className="flex-1 overflow-x-auto scrollbar-glass"
           onPointerDown={handlePointerDown}
           onPointerMove={handlePointerMove}
           onPointerUp={handlePointerUp}

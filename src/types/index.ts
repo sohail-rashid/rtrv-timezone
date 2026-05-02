@@ -83,4 +83,51 @@ export const COMMON_TIMEZONES: { iana: string; label: string; keywords: string[]
   { iana: 'Africa/Cairo', label: 'Cairo', keywords: ['cairo', 'egypt'] },
   { iana: 'Asia/Bangkok', label: 'Bangkok', keywords: ['bangkok', 'thailand'] },
   { iana: 'Asia/Jakarta', label: 'Jakarta', keywords: ['jakarta', 'indonesia'] },
+  // Central & South Asia
+  { iana: 'Asia/Kabul', label: 'Kabul (AFT)', keywords: ['kabul', 'afghanistan', 'aft'] },
+  { iana: 'Asia/Karachi', label: 'Karachi (PKT)', keywords: ['karachi', 'pakistan', 'pkt', 'pk'] },
+  { iana: 'Asia/Dushanbe', label: 'Dushanbe (TJT)', keywords: ['dushanbe', 'tajikistan', 'tjt'] },
+  { iana: 'Asia/Tashkent', label: 'Tashkent (UZT)', keywords: ['tashkent', 'uzbekistan', 'uzt'] },
+  // Russia
+  { iana: 'Europe/Kaliningrad', label: 'Kaliningrad (MSK-1)', keywords: ['kaliningrad', 'russia', 'russian'] },
+  { iana: 'Europe/Moscow', label: 'Moscow (MSK)', keywords: ['moscow', 'russia', 'msk', 'russian'] },
+  { iana: 'Europe/Samara', label: 'Samara (MSK+1)', keywords: ['samara', 'russia', 'russian'] },
+  { iana: 'Asia/Yekaterinburg', label: 'Yekaterinburg (MSK+2)', keywords: ['yekaterinburg', 'ekb', 'russia', 'russian'] },
+  { iana: 'Asia/Omsk', label: 'Omsk (MSK+3)', keywords: ['omsk', 'russia', 'russian'] },
+  { iana: 'Asia/Krasnoyarsk', label: 'Krasnoyarsk (MSK+4)', keywords: ['krasnoyarsk', 'russia', 'russian'] },
+  { iana: 'Asia/Novosibirsk', label: 'Novosibirsk (MSK+4)', keywords: ['novosibirsk', 'russia', 'russian'] },
+  { iana: 'Asia/Irkutsk', label: 'Irkutsk (MSK+5)', keywords: ['irkutsk', 'russia', 'russian'] },
+  { iana: 'Asia/Yakutsk', label: 'Yakutsk (MSK+6)', keywords: ['yakutsk', 'yakutia', 'russia', 'russian'] },
+  { iana: 'Asia/Vladivostok', label: 'Vladivostok (MSK+7)', keywords: ['vladivostok', 'russia', 'russian'] },
+  { iana: 'Asia/Sakhalin', label: 'Sakhalin (MSK+8)', keywords: ['sakhalin', 'sakhalov', 'russia', 'russian'] },
+   { iana: 'Asia/Magadan', label: 'Magadan (MSK+9)', keywords: ['magadan', 'russia', 'russian'] },
+   // Turkey & Eastern Europe
+   { iana: 'Europe/Istanbul', label: 'Istanbul (TRT)', keywords: ['istanbul', 'turkey', 'trt', 'turkiye'] },
+   { iana: 'Europe/Helsinki', label: 'Helsinki (EET)', keywords: ['helsinki', 'finland', 'eet', 'eest'] },
+   { iana: 'Europe/Athens', label: 'Athens (EET)', keywords: ['athens', 'greece', 'athens', 'eet', 'eest'] },
+   { iana: 'Europe/Brussels', label: 'Brussels (CET)', keywords: ['brussels', 'belgium', 'eu', 'cet', 'cest'] },
+   { iana: 'Europe/Sofia', label: 'Sofia (EET)', keywords: ['sofia', 'bulgaria', 'eet', 'eest'] },
+   // Middle East
+   { iana: 'Asia/Tehran', label: 'Tehran (IRST)', keywords: ['tehran', 'iran', 'persian', 'irst'] },
+   { iana: 'Asia/Amman', label: 'Amman (AST)', keywords: ['amman', 'jordan', 'ast'] },
+   { iana: 'Asia/Beirut', label: 'Beirut (EET)', keywords: ['beirut', 'lebanon', 'eet', 'eest'] },
+   { iana: 'Asia/Baghdad', label: 'Baghdad (AST)', keywords: ['baghdad', 'iraq', 'ast'] },
+   { iana: 'Asia/Kuwait', label: 'Kuwait City (AST)', keywords: ['kuwait', 'kuwait city', 'ast'] },
+   { iana: 'Asia/Damascus', label: 'Damascus (AST)', keywords: ['damascus', 'syria', 'ast'] },
+   // South Asia (half-hour offsets)
+   { iana: 'Asia/Colombo', label: 'Colombo (SLST)', keywords: ['colombo', 'sri lanka', 'slst'] },
+   { iana: 'Asia/Dhaka', label: 'Dhaka (BST)', keywords: ['dhaka', 'bangladesh', 'bst'] },
+   // Southeast Asia
+   { iana: 'Asia/Kuala_Lumpur', label: 'Kuala Lumpur (MYT)', keywords: ['kuala lumpur', 'malaysia', 'myt'] },
+   { iana: 'Asia/Ho_Chi_Minh', label: 'Ho Chi Minh City (ICT)', keywords: ['ho chi minh', 'vietnam', 'ict', 'saigon'] },
+   { iana: 'Asia/Phnom_Penh', label: 'Phnom Penh (ICT)', keywords: ['phnom penh', 'cambodia', 'ict'] },
+   // Americas
+   { iana: 'America/Lima', label: 'Lima (PET)', keywords: ['lima', 'peru', 'pet'] },
+   { iana: 'America/Bogota', label: 'Bogota (COT)', keywords: ['bogota', 'colombia', 'cot'] },
+   { iana: 'America/Santiago', label: 'Santiago (CLT)', keywords: ['santiago', 'chile', 'clt', 'clst'] },
+   { iana: 'America/Caracas', label: 'Caracas (VET)', keywords: ['caracas', 'venezuela', 'vet'] },
+   { iana: 'America/Argentina/Cordoba', label: 'Cordoba (ART)', keywords: ['cordoba', 'argentina', 'art'] },
+   // US secondary hubs
+   { iana: 'America/Indiana/Indianapolis', label: 'Indianapolis (ET)', keywords: ['indianapolis', 'indiana', 'et', 'eastern'] },
+   { iana: 'America/Puerto_Rico', label: 'San Juan (AST)', keywords: ['san juan', 'puerto rico', 'ast'] },
 ];

@@ -30,6 +30,7 @@ Built for remote teams, global collaborators, and travelers. Available as a **we
 | 📊 **Time Grid** | Visual comparison with business/night hour shading |
 | 📅 **Date & Time Picker** | Jump to any date or exact time |
 | 🎨 **5 Color Themes** | Obsidian, Midnight, Graphite, Crimson, Emerald |
+| 🌍 **100+ Timezones** | 65+ major cities across 6 continents with smart search |
 | 🌓 **Light / Dark Mode** | Per-theme palettes with system preference detection |
 | 🔍 **Smart Search** | Search by city, country, timezone, or abbreviation |
 | 🏷️ **Relative Time** | Shows "3h ahead" / "5h behind" vs primary zone |
@@ -47,7 +48,7 @@ Built for remote teams, global collaborators, and travelers. Available as a **we
 
 ## 📋 Release Notes
 
-### v1.1.0
+### v0.1.2
 
 **New Features**
 - Date picker — jump to any date
@@ -68,6 +69,15 @@ Built for remote teams, global collaborators, and travelers. Available as a **we
 - Responsive grid layout for timezone cards
 - Modal enter/exit animations
 - Now vs Selected column colors clearly differentiated (teal vs accent)
+
+### v0.1.3
+
+**Expanded Timezone Coverage**
+- 65+ major world cities across 6 continents
+- New regions: Turkey, Eastern Europe, Middle East, South Asia, Southeast Asia, Latin America
+- Russia full coverage: Kaliningrad through Magadan (MSK-1 to MSK+9)
+- Half-hour offset zones: Afghanistan, Pakistan, Sri Lanka, Bangladesh, Nepal
+- Searchable by city, country, timezone abbreviation, or region
 
 ---
 
